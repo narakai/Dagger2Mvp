@@ -1,6 +1,9 @@
 package org.unreal.dagger.function.main.presenter;
 
 import android.content.SharedPreferences;
+import android.util.Log;
+import android.view.View;
+import android.widget.Toast;
 
 import org.unreal.dagger.data.http.local.service.UserService;
 import org.unreal.dagger.data.http.taobao.service.TaobaoIPLocationService;
@@ -25,24 +28,27 @@ import rx.schedulers.Schedulers;
  * @version 1.0.0 <br/>
  */
 public class MainPresenter implements MainContract.presenter {
-
+    private static final String TAG = "MainPresenter";
     private final MainContract.View view;
     private final SharedPreferences sharedPreferences;
     private final TaobaoIPLocationService locationService;
     private final UserService userService;
+    private final String tv;
 
     @Inject
     public MainPresenter(MainContract.View view,
                          @Named("default") SharedPreferences sharedPreferences,
                          TaobaoIPLocationService locationService,
-                         UserService userService) {
+                         UserService userService, @Named("s") String tv) {
         this.view = view;
         this.sharedPreferences = sharedPreferences;
         this.locationService = locationService;
         this.userService = userService;
+        this.tv = tv;
     }
 
     public void main(){
+        Log.d(TAG, "main: " + tv);
         locationService.getIPInfo("myip")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

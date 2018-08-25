@@ -2,6 +2,7 @@ package org.unreal.dagger.function.main;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -15,10 +16,14 @@ import org.unreal.dagger.function.main.presenter.MainPresenter;
 import javax.inject.Inject;
 
 public class MainActivity extends AppCompatActivity implements MainContract.View{
+    private static final String TAG = "MainActivity";
 
-    //注入presenter 对象
+    //注入presenter 对象,调其构造函数，若无Inject函数需要module里provide
     @Inject
     MainPresenter mainPresenter;
+
+    @Inject
+    OneInjectClass mOneInjectClass;
 
     private TextView city;
     private TextView cityCode;
@@ -32,6 +37,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         setupActivityComponent();
         bindView();
         mainPresenter.main();
+        Log.d(TAG, "onCreate: " + mOneInjectClass.one);
     }
 
     private void bindView() {
@@ -48,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     private void setupActivityComponent() {
         DaggerApplication.get(this)
                 .getAppComponent()
-                .addSub(new MainModule(this))
+                .addSub(new MainModule(this, this.getClass().getCanonicalName(), "OneInjectClass"))
                 .inject(this);
     }
 
